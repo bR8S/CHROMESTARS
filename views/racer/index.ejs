@@ -1,0 +1,185 @@
+<!-- CALCULATE W/L RATIO -->
+<% if (losses === 0) { %>
+    <% losses = 1 %>
+<% } %>
+<% const ratio = wins / losses %>
+
+<!-- CALCULATE AVG POS -->
+<% let placementSum = 0 %>
+<% placements.forEach( placement => { %>
+    <% placementSum = placementSum + placement %>
+<% }) %>
+<% const avgPos = placementSum / placements.length %>
+
+<div class="racer-hero-banner">
+    <img class="racer-hero__avatar" src="<%= profile_image %>">
+</div>
+
+<div class="racer-hero-banner__content">
+    <div>
+        <h4 class="racer-hero-banner__surtitle">ALIAS</h4>
+        <h2 class="racer-hero-banner__alias"><%= username %></h2>
+        <p class="racer-hero-banner__bio"><%= bio %></p>
+    </div>
+    <div class="racer-hero-banner__elo">
+        <%= elo %>SR
+    </div>
+</div>
+
+<div class="racer-content">
+    <div class="racer-content__achievements">
+        <h3 class="racer-content__achievements-header">ACHIEVEMENTS</h3>
+        <div class="racer-content__achievements-achievement">
+            <p>* COMING SOON ...</p>
+        </div>
+        <!--
+        <div class="racer-content__achievements-achievement">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M13.387 17.375c-.679.385-2.076.385-2.756 0-.097 1.239-1.419 2.625-3.631 2.625v4h10v-4c-2.275 0-3.516-1.386-3.613-2.625zm2.613 5.625h-8v-2h8v2zm8-19.993c-.377 4.162-2.872 8.083-7.039 9.392.334-.551.665-1.157.984-1.816 2.959-1.515 4.097-4.265 4.527-6.279h-2.78c.058-.551.103-.779.103-1.297h4.205zm-16.961 9.392c-4.167-1.309-6.662-5.23-7.039-9.392h4.205c0 .518.045.746.103 1.297h-2.78c.431 2.015 1.568 4.764 4.527 6.279.319.659.65 1.265.984 1.816zm6.375 3.677c.612-2.957 4.965-5.038 5.39-12.958.138-2.574-4.129-3.118-6.795-3.118-2.754 0-6.915.423-6.825 2.8.309 8.18 4.8 10.279 5.421 13.276.639.534 2.168.534 2.809 0zm-6.891-13.373c0-.839 2.628-1.456 5.485-1.456 2.716 0 5.492.667 5.492 1.542 0 .9-2.911 1.307-5.492 1.307-2.458.001-5.485-.372-5.485-1.393zm2.233 2.421c.308 2.767 1.083 5.562 2.491 7.995-1.915-2.211-3.454-4.886-4.075-8.304.506.132 1.035.236 1.584.309z"/></svg>
+            <p>CHROMESTARS WINTER BASH 2025 WINNER</p>
+        </div>
+        <div class="racer-content__achievements-achievement">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M13.387 17.375c-.679.385-2.076.385-2.756 0-.097 1.239-1.419 2.625-3.631 2.625v4h10v-4c-2.275 0-3.516-1.386-3.613-2.625zm2.613 5.625h-8v-2h8v2zm8-19.993c-.377 4.162-2.872 8.083-7.039 9.392.334-.551.665-1.157.984-1.816 2.959-1.515 4.097-4.265 4.527-6.279h-2.78c.058-.551.103-.779.103-1.297h4.205zm-16.961 9.392c-4.167-1.309-6.662-5.23-7.039-9.392h4.205c0 .518.045.746.103 1.297h-2.78c.431 2.015 1.568 4.764 4.527 6.279.319.659.65 1.265.984 1.816zm6.375 3.677c.612-2.957 4.965-5.038 5.39-12.958.138-2.574-4.129-3.118-6.795-3.118-2.754 0-6.915.423-6.825 2.8.309 8.18 4.8 10.279 5.421 13.276.639.534 2.168.534 2.809 0zm-6.891-13.373c0-.839 2.628-1.456 5.485-1.456 2.716 0 5.492.667 5.492 1.542 0 .9-2.911 1.307-5.492 1.307-2.458.001-5.485-.372-5.485-1.393zm2.233 2.421c.308 2.767 1.083 5.562 2.491 7.995-1.915-2.211-3.454-4.886-4.075-8.304.506.132 1.035.236 1.584.309z"/></svg>
+            <p>CHROMESTARS WINTER BASH 2025 WINNER</p>
+        </div>
+        -->
+    </div>
+
+    <div class="racer-content__statistics">
+        <h3 class="racer-content__statistics-header">STATISTICS</h3>
+        <p class="racer-content__statistics-statistic">TOTAL NUMBER OF RACES: <span><%= competitions %></span></p>
+        <p class="racer-content__statistics-statistic">TOTAL NUMBER OF WINS: <span><%= wins %></span></p>
+        <p class="racer-content__statistics-statistic">TOTAL NUMBER OF LOSSES: <span><%= losses %></span></p>
+        <p class="racer-content__statistics-statistic">TOTAL NUMBER OF PODIUM FINISHES: <span><%= podium_count %></span></p>
+        <p class="racer-content__statistics-statistic">BEST WIN STREAK: <span><%= streak %></span></p>
+        <p class="racer-content__statistics-statistic">OVERALL W/L RATIO: <span><%= parseFloat(ratio).toFixed(1) %></span></p>
+        <p class="racer-content__statistics-statistic">AVERAGE POSITION: <span><%= avgPos.toFixed(1) %></span></p>
+    </div>
+    <div class="racer-content__tracks-rivals">
+        <% if (top_tracks.length >= 1) { %>
+        <div class="racer-content__tracks">
+            <h4>BEST TRACKS</h4>
+            <ol>
+                <% top_tracks.forEach(track => { %>
+                    <li><%= track.track %></li>
+                <% }) %>
+            </ol>
+        </div>
+        <% } %>
+        <% if (top_rivals.length >= 1) { %>
+        <div class="racer-content__rivals">
+            <h4>ALL TIME RIVALS</h4>
+            <ol>
+                <% top_rivals.forEach(rival => { %>
+                    <li><%= rival.rival %></li>
+                <% }) %>
+            </ol>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<style>
+    .racer-hero-banner {
+        position: relative;
+        width: 100%;
+        height: 295px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-image: url('<%= background_image %>');
+        background-position: center;
+    }
+    .racer-hero__avatar {
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        top: 40%;
+        left: 32px;
+        object-fit: cover;
+    }
+    .racer-hero-banner__content {
+        position: relative;
+        left: calc(320px + 64px);
+        width: calc(100% - 416px);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 24px;
+    }
+    .racer-content {
+        display: flex;
+        flex-direction: row;
+        margin-top: 64px;
+        padding: 0 32px;
+    }
+    .racer-content__achievements {
+        width: calc(320px + 32px);
+    }
+    .racer-content__statistics {
+        width: 45%;
+        margin-right: 80px;
+    }
+    .racer-content__achievements-header, .racer-content__statistics-header {
+        font-size: 24px;
+        line-height: 1.2;
+        margin: 0 0 32px;
+    }
+    .racer-content__achievements-achievement, .racer-content__statistics-statistic {
+        font-size: 14px;
+        line-height: 1.2;
+        margin-bottom: 24px;
+        width: 90%;
+    }
+    .racer-content__achievements-achievement p, .racer-content__statistics-statistic p {
+        margin: 0;
+    }
+    .racer-content__statistics-statistic {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .racer-content__achievements-achievement svg {
+        fill: #fff;
+        margin-right: 16px;
+    }
+    .racer-content__achievements-achievement {
+        display: flex;
+        align-items: center;
+    }
+    .racer-hero-banner__surtitle {
+        font-size: 16px;
+        margin: 0 0 4px;
+    }
+    .racer-hero-banner__alias {
+        font-size: 48px;
+        line-height: 1.2;
+        margin: 0;
+    }
+    .racer-hero-banner__bio {
+        font-size: 14px;
+        margin: 4px 0 0;
+        text-transform: uppercase;
+    }
+    .racer-hero-banner__elo {
+        font-size: 36px;
+        font-weight: 900;
+    }
+    .racer-content__tracks-rivals h4 {
+        font-size: 24px;
+        margin: 0;
+        margin-bottom: 16px;
+    }
+    .racer-content__tracks-rivals ol {
+        margin: 0;
+    }
+    .racer-content__tracks-rivals li {
+        font-size: 14px;
+        margin-bottom: 16px;
+        text-transform: uppercase;
+    }
+    .racer-content__tracks {
+        margin-bottom: 32px;
+    }
+</style>

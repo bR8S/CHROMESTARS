@@ -1,0 +1,60 @@
+<div class="form">
+    <h1>Forgot Password</h1>
+    <% if (messages.error) { %>
+        <%= messages.error %>
+    <% } %>
+    <form class="form__login" action="/password/forgot-password" method="POST">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+        </div>
+        <button class="form__submit" type="submit">Reset Password</button>
+    </form>
+</div>
+
+<style>
+    .form__submit {
+        margin: 0 auto;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: transparent;
+        border: 1px solid #FFFFFF24;
+        width: 100%;
+        max-width: 700px;
+        min-height: 42px;
+        cursor: pointer;
+        transition: all 0.025s ease-in;
+    }
+    .form__submit:hover {
+        border: 1px solid #FFFFFF79;
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+        text-decoration: line-through;
+    }
+    .form__register {
+        padding: 12px;
+    }
+    .form__register:hover {
+        text-decoration: line-through;
+    }
+    .form__login {
+        gap: 0 !important;
+    }
+    .reset-password {
+        margin-top: 8px;
+        position: relative;
+        text-align: end;
+    }
+    .form form {
+        width: 500px !important;
+    }
+    .form-row .form-group {
+        width: 100% !important;
+    }
+</style>

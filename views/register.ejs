@@ -1,0 +1,71 @@
+<div class="form">
+    <h1>Register</h1>
+    <form action="/register" method="POST">
+        <div class="form-row">
+            <div class="form-group"> 
+                <label for="phone">Phone Number *</label>
+                <input type="phone" id="phone" name="phone" autocomplete="off" required>
+            </div>
+            <div class="form-group">
+                <label for="username">Alias *</label>
+                <input type="text" id="username" name="username" autocomplete="on" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="first_name">First Name *</label>
+                <input type="text" id="first_name" name="first_name" autocomplete="on" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name *</label>
+                <input type="text" id="last_name" name="last_name" autocomplete="on" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" autocomplete="on" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Password *</label>
+                <input type="password" id="password" name="password" autocomplete="on" required>
+            </div>
+        </div>
+        <button class="form__submit" type="submit">Sign up</button>
+    </form>
+    <a class="form__login" href="/login">Login</a>
+</div>
+
+<style>
+    .form-row #profile_image {
+        width: 100%;
+    }
+    .form__submit {
+        margin: 0 auto;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: transparent;
+        border: 1px solid #FFFFFF24;
+        width: 100%;
+        max-width: 700px;
+        min-height: 42px;
+        cursor: pointer;
+        transition: all 0.025s ease-in;
+    }
+    .form__submit:hover {
+        border: 1px solid #FFFFFF79;
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+        text-decoration: line-through;
+    }
+    .form__login {
+        padding: 12px;
+    }
+    .form__login:hover {
+        text-decoration: line-through;
+    }
+</style>

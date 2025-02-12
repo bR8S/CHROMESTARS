@@ -1,0 +1,144 @@
+<div>
+    <h1>Track</h1>
+    <div class="race-form">
+        <div class="race-form-new">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="laps">Number of Laps</label>
+                <input type="number" id="laps" name="laps" required>
+            </div>
+            <div class="form-row">
+                <button class="form__btn form__submit">Submit Race</button>
+                <a class="form__btn" href="/">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const trackSubmit = document.querySelector('.race-form-new .form__submit')
+    submitTrackForm()
+
+    async function submitTrackForm(){
+        trackSubmit.addEventListener('click', async event => {
+            console.log('submit')
+            const trackName = document.querySelector('.race-form-new #name').value
+            const trackLaps = document.querySelector('.race-form-new #laps').value
+
+            const data = JSON.stringify({
+                title: trackName,
+                laps: trackLaps
+            })
+
+            console.log(data)
+
+            const newTrack = await fetch('/track', {
+                method: 'POST',      
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+
+            window.location.href = '/track'
+        })
+    }
+</script>
+
+
+<style>
+    .race-form form {
+        flex-direction: column;
+        gap: 40px;
+        width: 100%;
+    }
+    .race-form {
+        margin-top: 40px;
+        padding: 0;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .form-row { 
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+    .form-group {
+        width: 100%;
+        max-width: 800px;
+        margin-bottom: 40px;
+    }
+    .form__submit {
+        margin: 0;
+    }
+    .form__btn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: transparent;
+        border: 1px solid #FFFFFF24;
+        width: 200px;
+        min-height: 42px;
+        cursor: pointer;
+        transition: all 0.025s ease-in;
+    }
+    .form__btn:hover {
+        border: 1px solid #FFFFFF79;
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+    }
+    .racer-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
+    .racer {
+        height: 40px;
+        width: 120px;
+        padding: 0 12px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .racer-select {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        border: 1px solid #FFFFFF24;
+        pointer-events: none;
+    }
+    .racer input {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        opacity: 0;
+    }
+    .racer input:checked + .racer-select {
+        border: 1px solid #FFFFFF79;
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+    }
+    .racer input:hover {
+        cursor: pointer;
+    }
+    .racer input:hover + .racer-select {
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+    }
+    .racer label {
+        margin: 0 !important;
+    }
+</style>

@@ -1,0 +1,37 @@
+<div>
+    <div class="password-reset-modal">
+        <h2>Email sent!</h2>
+        <p>We've just sent you a reset link.<br>
+        Check your mail box.</p>
+        <a class="form__btn" href="/login">CONTINUE</a>
+    </div>
+</div>
+
+<style>
+    .password-reset-modal {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ffffff0d;
+        text-align: center;
+        border-radius: 4px;
+        border: 1px solid #ffffff27;
+        min-width: 400px;
+        backdrop-filter: blur(4px);
+    }
+    .password-reset-modal h2 {
+        margin: 0;
+    }
+    .password-reset-modal p {
+        line-height: 1.5;
+    }
+    .password-reset-modal .form__btn {
+        margin-top: 12px;
+    }
+</style>

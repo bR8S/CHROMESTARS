@@ -1,0 +1,73 @@
+<div id="cursorMoveBg" class="cursor-move-bg"></div>
+<style>
+    .cursor-move-bg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 300px;
+        height: 150px;
+        background: radial-gradient(ellipse, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 60%);
+        transition: scale 0.5s ease-in, opacity 0.25s ease-in;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 1000;
+        overflow: hidden;
+    }
+    .cursor-move-bg.move {
+        opacity: 1;
+    }
+</style>
+
+<script>
+    let hideCursor = false
+    let prevX = 0
+    let prevY = 0
+    let prevTimeStamp = 0
+    let cursorMoving = false
+    let cursorAnimeStart = performance.now()
+    let cursorMoveTimeout
+
+    const cursorBg = document.querySelector('#cursorMoveBg')
+
+    document.addEventListener("mouseleave", (e) => {
+        hideCursor = true
+    })
+
+    document.addEventListener("mouseenter", (e) => {
+        hideCursor = false;
+    })
+
+    document.addEventListener("mousemove", (e) => {
+        cursorMoving = true
+        const deltaX = Math.abs(e.pageX - prevX)
+        const deltaY = Math.abs(e.pageY - prevY)
+        const deltaTime = e.timeStamp - prevTimeStamp
+        const velocityX = deltaX / deltaTime
+        const velocityY = deltaY / deltaTime
+
+        const scaleX = 1 + velocityX / 3
+        const scaleY = 1 + velocityY / 3
+        const opacity = 0.2 + velocityX
+
+        cursorBg.style.top = `${e.pageY}px`
+        cursorBg.style.left = `${e.pageX}px`
+        cursorBg.style.transform = `translate(-50%, -50%) scaleX(${scaleX}) scaleY(${scaleY})`
+        cursorBg.style.opacity = opacity
+
+        prevX = e.pageX
+        prevY = e.pageY
+        prevTimeStamp = e.timeStamp
+
+        clearTimeout(cursorMoveTimeout)
+        cursorMoveTimeout = setTimeout(cursorMoveFalse, 100) // we can't tell when mousemove stops, so timeout will reset value for us, if mouse continues moving will apply styles again
+    })
+
+    document.addEventListener("mouseout", () => {
+        cursorBg.style.transform = "none"
+    })
+
+    function cursorMoveFalse() {
+        cursorBg.style.opacity = 0
+        cursorMoving = false
+    }
+</script>

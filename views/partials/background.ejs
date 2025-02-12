@@ -1,0 +1,105 @@
+<div class="background">
+    <img class="large-star" src="/chromestar.png">
+    <img class="big-star" src="/chromestar.png">
+    <img class="mid-star" src="/chromestar.png">
+    <img class="small-star" src="/chromestar.png">
+</div>
+
+<style>
+    .background {
+        filter: blur(18px) grayscale(0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100%;
+        z-index: 0;
+        pointer-events: none;
+    }
+    .large-star {
+        position: absolute;
+        width: 850px;
+        height: 850px;
+        left: -2%;
+        top: 101%;
+        transform: rotate(11.592deg) translate(-50%, -50%);
+        animation: bigstar 45s infinite;
+        filter: blur(3px);
+    }
+    .big-star {
+        position: absolute;
+        width: 550px;
+        height: 550px;
+        left: 34.5%;
+        top: 50%;
+        transform: rotate(11.592deg) translate(-50%, -50%);
+        animation: bigstar 45s infinite;
+        filter: blur(6px);
+        display: none;
+    }
+    .mid-star {
+        position: absolute;
+        width: 750px;
+        height: 750px;
+        left: 94.5%;
+        top: 102%;
+        transform: rotate(11.592deg) translate(-50%, -50%);
+        animation: bigstar 45s infinite;
+        filter: blur(6px);
+    }
+    .small-star {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        left: 67.5%;
+        top: 45%;
+        scale: 0.93;
+        transform: rotate(66.635deg) translate(-50%, -50%);
+        animation: smallstar 48s infinite;
+        filter: blur(3px);
+    }
+    @keyframes bigstar {
+        0% {
+            scale: 1;
+            transform: rotate(11.592deg) translate(-50%, -50%);
+        }
+        25% {
+            scale: 0.93;
+            transform: rotate(13.592deg) translate(-50%, -50%);
+        }
+        50% {
+            scale: 1.03;
+            transform: rotate(10.592deg) translate(-50%, -50%);
+        }
+        75% {
+            scale: 0.96;
+            transform: rotate(12.592deg) translate(-50%, -50%);
+        }
+        100%{
+            scale: 1;
+            transform: rotate(11.592deg) translate(-50%, -50%);
+        }
+    }
+    @keyframes smallstar {
+        0% {
+            scale: 0.93;
+            transform: rotate(66.635deg) translate(-50%, -50%);
+        }
+        25% {
+            scale: 1;
+            transform: rotate(68.635deg) translate(-50%, -50%);
+        }
+        50% {
+            scale: 0.98;
+            transform: rotate(63.635deg) translate(-50%, -50%);
+        }
+        75% {
+            scale: 1;
+            transform: rotate(67.635deg) translate(-50%, -50%);
+        }
+        100%{
+            scale: 0.93;
+            transform: rotate(66.635deg) translate(-50%, -50%);
+        }
+    }
+</style>

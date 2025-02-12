@@ -1,0 +1,389 @@
+const express = require('express')
+const router = express.Router()
+const User = require('../models/user')
+
+router.get('', async (req, res) => {
+    if(req.session.user){
+        const username = req.session.user.username
+        const users = await User.find({})
+        const user = users.find( user => user.username === username )
+
+        res.render('../views/user/user.ejs', { id: user.id, profile_image: user.profile_image, background_image: user.background_image, username: user.username, phone_number: user.phone_number, first_name: user.first_name, last_name: user.last_name, email: user.email, bio: user.bio, password: user.password })
+    }
+    else {
+        res.redirect('/login')
+    }
+})
+
+// New Racer Route
+router.get('/new', async (req, res) => {
+    res.render('racer/new', { racer: new User() })
+})
+
+// Check if user is logged in
+router.get('/logged-in', async (req, res) => {
+    let userAuth = false
+
+    if(req.session.user){
+        const username = req.session.user.username
+        const users = await User.find({})
+        const user = users.find( user => user.username === username )
+        userAuth = true
+        if(user){
+            res.send(userAuth)
+        }
+    }
+    else {
+        res.send(userAuth)
+    }
+})
+
+// Check if user has correct perms
+router.get('/admin-perms', async (req, res) => {
+    let userAdmin = false
+
+    if(req.session.user){
+        const username = req.session.user.username
+        const users = await User.find({})
+        const user = users.find( user => user.username === username )
+        userAdmin = true
+        if(user){
+            res.send(userAdmin)
+        }
+    }
+    else {
+        res.send(userAdmin)
+    }
+})
+
+router.post('/update-account', async (req, res) => { 
+    const id = req.body.id
+    const user = await User.findById({ _id: id })
+
+    if(user.username !== req.body.username){
+        user.username = req.body.username
+    }
+    if(user.first_name !== req.body.first_name){
+        user.first_name = req.body.first_name
+    }
+    if(user.last_name !== req.body.last_name){
+        user.last_name = req.body.last_name
+    }
+    if(user.email !== req.body.email){
+        user.email = req.body.email
+    }
+    if(user.bio !== req.body.bio){
+        user.bio = req.body.bio
+    }
+    console.log(user.background_image, req.body.background_image)
+    if(user.background_image !== req.body.background_image && req.body.background_image){
+        user.background_image = req.body.background_image
+    }
+    console.log(user.profile_image, req.body.profile_image)
+    if(user.profile_image !== req.body.profile_image && req.body.profile_image){
+        user.profile_image = req.body.profile_image
+    }
+
+    await user.save()
+
+    res.send('')
+})
+
+// Fetch All Racers
+router.get('/all-racers', async (req, res) => {
+    const allRacers = await User.find({})
+    res.send(JSON.stringify(allRacers))
+}) 
+
+// Fetch Racers Given IDs
+router.get('/get-racers', async (req, res) => {
+    let idArray = req.query.ids.split(',')
+    const allRacers = await User.find({})
+    const matchingRacers = allRacers.filter(racer => idArray.includes(racer.id))
+    res.send(JSON.stringify(matchingRacers))
+}) 
+
+// Fetch Racer Given ID
+router.get('/:id', async (req, res) => {
+    const racer = await User.find({ _id: req.params.id })
+    res.send(JSON.stringify(racer))
+})
+
+// Update Racer Score Given ID
+router.post('/update-score', async (req, res) => {
+    const id = req.body.id
+    const points = req.body.points
+    
+    try {
+        const racer = await User.findById({ _id: id })
+        racer.score = racer.score + points
+        await racer.save()
+    } catch (e) {
+        console.log(e)
+    }
+
+    res.send('')
+})
+
+// Update Racer ELO Given ID
+router.post('/update-elo', async (req, res) => {
+    const id = req.body.id
+    const elo = req.body.elo
+
+    try {
+        const racer = await User.findById({ _id: id })
+        racer.elo = elo
+        await racer.save()
+    } catch (e) {
+        console.log(e)
+    }
+
+    res.send('')
+})
+
+// Update Racer Wins Given ID
+router.post('/update-win', async (req, res) => {
+    const id = req.body.id
+    
+    try {
+        const racer = await User.findById({ _id: id })
+        racer.wins += 1
+        await racer.save()
+    } catch (e) {
+        console.log(e)
+    }
+
+    res.send('')
+})
+
+// Update Racer Losses Given ID
+router.post('/update-loss', async (req, res) => {
+    const id = req.body.id
+    
+    try {
+        const racer = await User.findById({ _id: id })
+        racer.losses += 1
+        await racer.save()
+    } catch (e) {
+        console.log(e)
+    }
+
+    res.send('')
+})
+
+// Update Racer Competitions Given ID
+router.post('/update-competitions', async (req, res) => {
+    const id = req.body.id
+    
+    try {
+        const racer = await User.findById({ _id: id })
+        racer.competitions += 1
+        await racer.save()
+    } catch (e) {
+        console.log(e)
+    }
+
+    res.send('')
+})
+
+// Update Racer Avg Pos Given ID
+router.post('/update-avg-pos', async (req, res) => {
+    const id = req.body.id
+    const placement = req.body.placement + 1
+    
+    try {
+        const racer = await User.findById({ _id: id })
+        racer.placements.push(placement)
+        await racer.save()
+    } catch (e) {
+        console.log(e)
+    }
+
+    res.send('')
+})
+
+// Update Racer Best Streak Given ID
+router.post('/update-streak', async (req, res) => {
+    const id = req.body.id
+    
+    try {
+        const racer = await User.findById({ _id: id })
+        const requiredPlacement = 4
+        let currStreak = 0
+        let highestStreak = 0
+        let end = racer.placements.length
+
+        for(let i = 0; i < end; i++) {
+            if (racer.placements[i] <= requiredPlacement) {
+                currStreak += 1
+            }
+            else {
+                if(currStreak > highestStreak) {
+                    highestStreak = currStreak
+                }
+                currStreak = 0
+            }
+        }
+
+        if(currStreak > highestStreak) {
+            highestStreak = currStreak
+        }
+
+        racer.streak = highestStreak
+        await racer.save()
+    } catch (e) {
+        console.log(e)
+    }
+
+    res.send('')
+})
+
+// Update Racer Number of Podium Finishes
+router.post('/update-podium-count', async (req, res) => {
+    const id = req.body.id
+    
+    try {
+        const racer = await User.findById({ _id: id })
+        const requiredPlacement = 4
+
+        let podiumCount = 0
+        let end = racer.placements.length
+
+        for(let i = 0; i < end; i++) {
+            if(racer.placements[i] <= requiredPlacement){
+                podiumCount++
+            }
+        }
+
+        racer.podium_count = podiumCount
+        await racer.save()
+    } catch (e) {
+        console.log(e)
+    }
+
+    res.send('')
+})
+
+//Update Racer Rivals 
+router.post('/update-rivals', async (req, res) => {
+    const id = req.body.id
+    const standing = req.body.standing
+    const standings = req.body.standings
+
+    try{
+        const racer = await User.findById({ _id: id })
+        console.log('RACER: ' + racer)
+        
+        let placementSum = 0
+
+        racer.placements.forEach(placement => {
+            placementSum += placement
+        })
+
+        const avgPlacement = (placementSum / racer.placements?.length).toFixed(2)
+
+        console.log(standing + " > " + avgPlacement)
+        
+        if(standing > avgPlacement){
+            // save every racer that outplaced the current racers
+            const rivalsArr = standings.slice(0, standing - 1)
+            const rivals = await User.find({ '_id': { $in: rivalsArr } })
+
+            console.log('RIVALS: ' + rivals)
+
+            rivals.forEach(rival => {
+                racer.rivals.push(rival.username)
+            })
+
+            const rivalCount = new Map()
+
+            racer.rivals.forEach(rival => {
+                rivalCount.set(rival, (rivalCount.get(rival) || 0) + 1)
+            })
+
+            // Step 2: Sort by frequency in descending order
+            const sortedRivals = Array.from(rivalCount.entries()).sort((a, b) => b[1] - a[1]);
+
+            // Step 3: Extract the top N words
+            let topRivals
+
+            if(sortedRivals.length >= 3){
+                console.log('in if')
+                topRivals = sortedRivals.slice(0, 3).map(([rival, count]) => ({ rival, count }))
+                console.log(topRivals)
+                racer.top_rivals = topRivals
+            }
+            else {
+                console.log('in else')
+                topRivals = sortedRivals.map(([rival, count]) => ({ rival, count }))
+                console.log(topRivals)
+                racer.top_rivals = topRivals
+            }
+        }
+        await racer.save()
+    } catch(e) {
+        console.log(e)
+    }
+    res.send('')
+})
+
+//Update Racer Tracks
+router.post('/update-tracks', async (req, res) => {
+    const id = req.body.id
+    const track = req.body.track
+    const standing = req.body.standing
+
+    try{
+        if(standing <= 3) {
+            console.log('standing <= 3')
+            const racer = await User.findById({ _id: id })
+            racer.tracks.push(track)
+
+            //await racer.save()
+
+            const trackCount = new Map()
+
+            racer.tracks.forEach(track => {
+                trackCount.set(track, (trackCount.get(track) || 0) + 1)
+            })
+
+            // Step 2: Sort by frequency in descending order
+            const sortedTracks = Array.from(trackCount.entries()).sort((a, b) => b[1] - a[1]);
+
+            // Step 3: Extract the top N words
+            const topTracks = sortedTracks.slice(0, 3).map(([track, count]) => ({ track, count }))
+            racer.top_tracks = topTracks
+
+            await racer.save()
+        }
+    } catch(e) {
+        console.log(e)
+    }
+    res.send('')
+})
+
+// Reset all racers 
+router.post('/reset-racers', async (req, res) => {
+    try{
+        const racers = await User.find({})
+        racers.forEach(async racer => {
+            racer.wins = 0;
+            racer.losses = 0;
+            racer.competitions = 0;
+            racer.score = 0;
+            racer.elo = 1000;
+            racer.placements = [];
+            racer.streak = 0;
+            racer.podium_count = 0;
+            racer.rivals = [];
+            racer.top_rivals = [];
+            racer.tracks = [];
+            racer.top_tracks = [];
+            await racer.save()
+        })
+    } catch(e){
+        console.log(e)
+    }
+})
+
+module.exports = router

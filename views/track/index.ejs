@@ -1,0 +1,95 @@
+<div class="tracks-header">
+    <h1>All Tracks</h1>
+    <a href="/track/new" class="form__btn">Create Track</a>
+</div>
+
+<div class="tracks">
+<% tracks.forEach(track => { %>
+    <div class="track">
+        <div class="track-top">
+            <div class="track-title"><%= track.name %> | <%= track._id %></div>
+            <div class="track-delete" data-delete-id="<%= track._id %>">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 24 24">
+                <path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="track-title">Laps: <%= track.laps %></div>
+    </div>
+<% }) %>
+</div>
+
+<script>
+    function handleTrackDelete(btn) {
+        btn.addEventListener('click', async event => {
+            const trackId = btn.dataset.deleteId
+            const data = JSON.stringify({ id: trackId })
+
+            const deletetrack = await fetch('/track/delete-track', {
+                method: 'POST',      
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+            window.location.href = '/track'
+        })
+    }
+
+    const trackDeleteBtns = document.querySelectorAll('.track-delete')
+
+    trackDeleteBtns.forEach((btn) => handleTrackDelete(btn))
+</script>
+
+<style>
+    .tracks-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 40px;
+        margin-bottom: 32px;
+    }
+    .tracks {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    .track {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 16px;
+        gap: 8px;
+        border: 1px solid #FFFFFF24;
+    }
+    .track-top, .track-bottom {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .track-delete {
+        fill:#FFF;
+        height: 16px;
+        border: 1px solid #FFFFFF24;
+        padding: 6px;
+        cursor: pointer;
+        position: absolute;
+        top: 16px;
+        right: 16px;
+    }
+    .track-delete:hover {
+        border: 1px solid #FFFFFF79;
+        background: #FFFFFF24;
+    }
+    .track-delete svg {
+        height: 100%;
+        width: 100%;
+    }
+    ol {
+        margin: 0;
+    }
+    li {
+        padding: 4px;
+    }
+</style>

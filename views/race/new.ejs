@@ -1,0 +1,397 @@
+<div class="padding">
+    <h1>CREATE RACE</h1>
+    <div class="race-form">
+        <div class="race-form-new">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="time">Date and Time</label>
+                <input type="datetime-local" id="time" name="time" required>
+            </div>
+            <div class="track-options form-group">
+                <label for="track-options">Track</label>
+                <select id="track-options">
+                    <% tracks.forEach(track => { %>
+                        <option value="<%= track.name %>"><%= track.name %></option>
+                    <% }) %>
+                </select>
+                </div>
+            <div class="racer-options" id="racer-options">
+            <% const sortedRacers = racers.slice().sort((a, b) => a.username.localeCompare(b.username)) %>
+            <% sortedRacers.forEach(racer => { %>
+                <div class="racer">
+                    <input type="checkbox" class="racer-checkbox" id="<%= racer.username %>" name="<%= racer.username %>" value="<%= racer._id %>">
+                    <div class="racer-select"></div>
+                    <span></span>
+                    <label for="<%= racer.username %>">
+                        <%= racer.username %>
+                    </label>
+                </div>
+            <% }) %>
+            </div>
+            <ol class="racer-standings"></ol>
+            <div class="form-row">
+                <button class="form__btn form__submit">Submit Race</button>
+                <a class="form__btn" href="/">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const raceCheckboxes = Array.from(document.querySelectorAll('.race-form-new .racer-checkbox'))
+    let standingsArr = []
+    let standingsIdArr = []
+
+    raceCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('click', async event => {
+            if(!checkbox.checked){
+                // standing for current index should be removed, all elements should be moved over
+                const index = standingsArr.indexOf(event.target.name)
+                if (index > -1) { // only splice array when item is found
+                    standingsArr.splice(index, 1) // 2nd parameter means remove one item only
+                    standingsIdArr.splice(index, 1)
+                }
+            }
+            else {
+                // standing for current index should be added
+                standingsArr.push(event.target.name)
+                standingsIdArr.push(event.target.value)
+            }
+            updateStandings(standingsArr)
+        })
+    })
+
+    const raceSubmit = document.querySelector('.race-form-new .form__submit')
+    submitRaceForm()
+    
+    function updateStandings(standingsArr){
+        const racerStandings = document.querySelector('.racer-standings')
+        racerStandings.innerHTML = ''
+        
+        standingsArr.forEach(standing => {
+            let li = document.createElement('li')
+            li.innerText = standing
+            racerStandings.append(li)
+        })
+    }
+
+    async function submitRaceForm(){
+        raceSubmit.addEventListener('click', async event => {
+            const raceName = document.querySelector('.race-form-new #name').value
+            const raceTime = document.querySelector('.race-form-new #time').value
+            const trackName = document.querySelector('#track-options').value
+
+            const idString = standingsIdArr.join(',')
+            const allRacers = await getAllRacers(idString)
+            const numOfRacers = standingsIdArr.length
+
+            standingsIdArr.forEach((id, index) => {
+                index === 0 ? updateRacerWin(id) : updateRacerLoss(id)
+                updateRacerCompetitions(id)
+                updateRacerAvgPos(id, index)
+                updateRacerElo(id, index + 1, allRacers, numOfRacers)
+                updateRacerScore(id, index, numOfRacers)
+                updateRacerStreak(id)
+                updateRacerPodiumCount(id)
+                updateRacerRivals(id, index + 1, standingsIdArr)
+                updateRacerTracks(id, trackName, index)
+            })
+
+            const data = JSON.stringify({
+                title: raceName,
+                time: raceTime,
+                participants: standingsIdArr
+            })
+
+            const newRace = await fetch('/race', {
+                method: 'POST',      
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+
+            window.location.href = '/race'
+        })
+    }
+
+    async function updateRacerWin(id) {
+        const data = JSON.stringify({
+            id: id
+        })
+
+        const updateRacer = await fetch(`/account/update-win`, {
+            method: 'POST',      
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+    }
+
+    async function updateRacerLoss(id) {
+        const data = JSON.stringify({
+            id: id
+        })
+
+        const updateRacer = await fetch(`/account/update-loss`, {
+            method: 'POST',      
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+    }
+
+    async function updateRacerCompetitions(id) {
+        const data = JSON.stringify({
+            id: id
+        })
+
+        const updateRacer = await fetch(`/account/update-competitions`, {
+            method: 'POST',      
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+    }
+
+    async function updateRacerAvgPos(id, index){
+        const data = JSON.stringify({
+            id: id,
+            placement: index
+        })
+
+        const updateRacer = await fetch('/account/update-avg-pos', {
+            method: 'POST',      
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+    }
+
+    async function updateRacerScore(id, index, numOfRacers){
+        const points = numOfRacers - index
+        const data = JSON.stringify({
+            id: id,
+            points: points
+        })
+        const updateRacer = await fetch('/account/update-score', {
+            method: 'POST',
+            body: data
+        })
+    }
+
+    async function updateRacerElo(id, standing, allRacers, numOfRacers){
+        const currRacer = allRacers.filter(racer => racer._id === id)
+        const compRacers = allRacers.filter(racer => racer._id !== id)
+
+        /* FETCH RACER CURRENT ELO */
+        let currElo = currRacer[0].elo
+
+        /* CALCULATE RACERS NEW ELO */
+        const K = 10 // DOwN THE LINE WE CAN HAVE A DYNAMIC ELO RATING BASED ON RACERS ELO
+        let actualScore = (numOfRacers - standing) / (numOfRacers - 1)
+        let expectedScore = 0
+        let currScore = 0
+
+        /* ITERATE OVER ALL RARTICIPATING RACERS BESIDES RACER WE ARE CURR CALC NEW RATING FOR */ 
+        compRacers.forEach(racer => {
+            currScore += (1 / ( 1 + (10 ** ((racer.elo - currElo) / 400))))
+            expectedScore += expectedScore
+        })
+
+        expectedScore = expectedScore / (numOfRacers - 1)
+        
+        const newElo = Math.round(currElo + (K * (actualScore - expectedScore)))
+
+        const data = JSON.stringify({
+            id: id,
+            elo: newElo
+        })
+
+        const updateRacer = await fetch('/account/update-elo', {
+            method: 'POST',      
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+    }
+
+    async function updateRacerStreak(id){
+        const data = JSON.stringify({
+            id: id
+        })
+
+        const updateRacer = await fetch('/account/update-streak', {
+            method: 'POST',      
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+    }
+
+    async function getAllRacers(idString){
+        // fetch all racers given id string
+        const query = `/account/get-racers?ids=${idString}`
+        const getRacers = await fetch(query)
+        const getRacersJSON = await getRacers.json()
+        return getRacersJSON
+    }
+
+    async function updateRacerPodiumCount(id){
+        const data = JSON.stringify({
+            id: id
+        })
+        
+        const updateRacer = await fetch('/account/update-podium-count', {
+            method: 'POST',      
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+
+    }
+
+    async function updateRacerRivals(id, standing, standingsArr){
+        const data = JSON.stringify({
+            id: id,
+            standing: standing, 
+            standings: standingsArr
+        })
+
+        const updateRacer = await fetch('/account/update-rivals', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+    }
+
+    async function updateRacerTracks(id, track, standing){
+        const data = JSON.stringify({
+            id: id,
+            track: track,
+            standing: standing
+        })
+
+        const updateRacer = await fetch('/account/update-tracks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+    }
+
+</script>
+
+
+<style>
+    .race-form form {
+        flex-direction: column;
+        gap: 40px;
+        width: 100%;
+    }
+    .race-form {
+        margin-top: 40px;
+        padding: 0;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .form-row { 
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+    .form-group {
+        width: 100%;
+        max-width: 800px;
+        margin-bottom: 40px;
+    }
+    .form__submit {
+        margin: 0;
+    }
+    .form__btn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: transparent;
+        border: 1px solid #FFFFFF24;
+        width: 200px;
+        min-height: 42px;
+        cursor: pointer;
+        transition: all 0.025s ease-in;
+    }
+    .form__btn:hover {
+        border: 1px solid #FFFFFF79;
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+    }
+    .racer-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
+    .racer {
+        height: 40px;
+        width: 120px;
+        padding: 0 12px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .racer-select {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        border: 1px solid #FFFFFF24;
+        pointer-events: none;
+    }
+    .racer input {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        opacity: 0;
+    }
+    .racer input:checked + .racer-select {
+        border: 1px solid #FFFFFF79;
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+    }
+    .racer input:hover {
+        cursor: pointer;
+    }
+    .racer input:hover + .racer-select {
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+    }
+    .racer label {
+        margin: 0 !important;
+    }
+    .form input, .race-form input, .race-form select {
+        padding-right: 32px !important;
+    }
+    .race-form select option {
+        color: black;
+    }
+</style>

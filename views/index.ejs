@@ -1,0 +1,374 @@
+<div class="intro-homescreen-wrapper">
+    <div class="intro-homescreen">
+        <div class="intro-homescreen-bg"></div>
+        <img class="intro-big-star" src="chromestar.png">
+        <img class="intro-little-star" src="chromestar.png">
+        <img class="intro-big-star" src="chromestar.png">
+        <img class="intro-little-star" src="chromestar.png">
+    </div>
+    <div class="intro-text-content" style="text-align: center;">
+        <img class="homescreen-logo" src="chromestars-stars-logo.png">
+        <p> CHROMESTARS™ invites you to the ultimate underground racing circuit—a multi-week battle of speed, skill, and strategy. 
+            This isn’t just about being fast; it’s about proving you have what it takes to rise above the rest. 
+            <br><br>
+            Do you have what it takes to rule the streets? <b>The crown is waiting.</b>
+        </p>
+        <div class="intro-text-content__btns">
+            <a href="/login" class="form__btn">LOGIN</a>
+            <a href="/register" class="form__btn" style="display: none;">SIGN UP</a>
+        </div>
+    </div>
+</div>
+<div class="homescreen-leaderboard">
+    <h1>LEADERBOARD</h1>
+    <% const sortedRacers = racers.slice().sort((a, b) => b.elo - a.elo) %>
+    <div class="racers">
+        <div class="racers-header">
+            <div class="racers-header__standing"></div>
+            <h3 class="racers-header__alias">DRIVER</h3>
+            <h3 class="racers-header__score">SCORE</h3>
+            <h3 class="racers-header__elo">ELO RATING</h3>
+            <h3 class="racers-header__wins">TOTAL WINS</h3>
+            <h3 class="racers-header__competitions">COMPETITIONS</h3>
+            <h3 class="racers-header__avg-pos">AVERAGE POSITION</h3>
+        </div>
+        <% sortedRacers.forEach((racer, index) => { %>
+            <% let start = racer.placements.length - 1 %>
+            <% let streak = 0 %>
+
+            <% for (let i = start; i >= 0; i--) { %>
+                <% if (racer.placements[i] <= 4 && streak === (start - i)) { %>
+                    <% streak = streak + 1 %>
+                <% } else { %>
+                    <% break; %>
+                <% } %>
+            <% } %>
+            
+            <a href="/racer/<%= racer.username %>" class="racer" data-id="<%= racer._id %>">
+                <div class="racers-row__standing"><%= index + 1 %>.</div>
+                <div class="racers-row__alias">
+                    <img class="racers-row__img" src="<%= racer.profile_image %>">
+                    <%= racer.username %>
+                    <% if (streak >= 3) { %>
+                        <img class="racers-row__rocket" style="height: 20px;" src="rocket-icon.png">
+                    <% } %>
+                    </div>
+                <div class="racers-row__score"><%= racer.score %></div>
+                <div class="racers-row__elo"><%= racer.elo %></div>
+                <div class="racers-row__wins"><%= racer.wins %></div>
+                <div class="racers-row__competitions"><%= racer.competitions %></div>
+                <div class="racers-row__avg-pos">
+                    <% let placements = 0 %>
+                    <% racer.placements.forEach( placement => { %>
+                        <% placements = placements + placement %>
+                    <% }) %>
+                    <% const avgPos = placements / racer.placements.length %>
+                    <div class="racers-row__avg-pos-text"><%= avgPos.toFixed(1) %></div>
+                </div>
+            </a>
+        <% }) %>
+    </div>
+</div>
+
+<style>
+    html {
+        position: relative;
+    }
+    header {
+        display: none;
+    }
+    .intro-homescreen-wrapper {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100%;
+        background-color:#141414;
+    }
+    .intro-homescreen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        filter: blur(16px) grayscale(0.1);
+    }
+    .homescreen-leaderboard {
+        display: none;
+        padding: 20px 32px;
+    }
+    .homescreen-logo {
+        height: 125px;
+    }
+    .intro-homescreen-bg {
+        background: url('cinematic.gif');
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 120%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.75;
+        filter: blur(6px);
+    }
+    .intro-text-content {
+        max-width: 750px;
+    }
+    .intro-text-content h1 {
+        margin-bottom: 8px;
+    }
+    .intro-text-content p {
+        font-size: 14px;
+        line-height: 1.25;
+    }
+    .intro-text-content__btns {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .intro-big-star {
+        position: absolute;
+        width: 550px;
+        height: 550px;
+        left: 34.5%;
+        top: 50%;
+        transform: rotate(11.592deg) translate(-50%, -50%);
+        animation: bigstar 45s infinite;
+        filter: blur(6px);
+    }
+    .intro-little-star {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        left: 47.5%;
+        top: 65%;
+        scale: 0.93;
+        transform: rotate(66.635deg) translate(-50%, -50%);
+        animation: smallstar 48s infinite;
+        filter: blur(6px);
+    }
+    @keyframes bigstar {
+        0% {
+            scale: 1;
+            transform: rotate(11.592deg) translate(-50%, -50%);
+        }
+        25% {
+            scale: 0.93;
+            transform: rotate(13.592deg) translate(-50%, -50%);
+        }
+        50% {
+            scale: 1.03;
+            transform: rotate(10.592deg) translate(-50%, -50%);
+        }
+        75% {
+            scale: 0.96;
+            transform: rotate(12.592deg) translate(-50%, -50%);
+        }
+        100%{
+            scale: 1;
+            transform: rotate(11.592deg) translate(-50%, -50%);
+        }
+    }
+    @keyframes smallstar {
+        0% {
+            scale: 0.93;
+            transform: rotate(66.635deg) translate(-50%, -50%);
+        }
+        25% {
+            scale: 1;
+            transform: rotate(68.635deg) translate(-50%, -50%);
+        }
+        50% {
+            scale: 0.98;
+            transform: rotate(63.635deg) translate(-50%, -50%);
+        }
+        75% {
+            scale: 1;
+            transform: rotate(67.635deg) translate(-50%, -50%);
+        }
+        100%{
+            scale: 0.93;
+            transform: rotate(66.635deg) translate(-50%, -50%);
+        }
+    }
+    .racers-header {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        padding: 0 16px;
+    }
+    .racers-header__standing, .racers-row__standing {
+        width: 2%;
+    }
+    .racers-row__img {
+        width: 36px;
+        height: 36px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    .racer:hover .racers-row__img {
+        outline: 1px solid #fff;
+    }
+    .racers-header__alias, .racers-row__alias {
+        width: 38%;
+        font-size: 14px;
+    }
+    .racers-row__alias {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .racers-row__alias:hover {
+        font-weight: bold;
+    }
+    .racers-header__score, .racers-header__elo, .racers-header__wins, .racers-header__competitions, .racers-header__avg-pos, .racers-row__score, .racers-row__elo, .racers-row__wins, .racers-row__competitions, .racers-row__avg-pos {
+        width: 17%;
+        text-align: center;
+    }
+    .racers-row__avg-pos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .racers-row__avg-pos-text {
+        padding: 8px 12px;
+        background-color: #ffffff24;
+        border: 1px solid rgba(255, 255, 255, 0.79);
+        border-radius: 25px;
+        width: 40px;
+    }
+    .racers {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    .racer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        gap: 16px;
+        border: 1px solid #FFFFFF24;
+        background: #ffffff0d;
+        transition: all 0.15s ease-in-out;
+    }
+    .racer:hover {
+        border: 1px solid #ffffff7a;
+        background: #ffffff1f;
+    }
+    /*
+    .racers .racer:nth-of-type(1) {
+        background: radial-gradient(circle, rgb(238 174 202 / 20%) 0%, rgb(148 187 233 / 20%) 100%);
+    }
+    .racers .racer:nth-of-type(2) {
+        border: 1px solid #0080004a;
+        --angle: 45deg;
+        background: linear-gradient(var(--angle), oklab(0.76 -0.06 0.03 / 0.2), oklab(0.59 -0.06 0.01 / 0.2), oklab(0.48 -0.06 0 / 0.2));
+    }
+    .racers .racer:nth-of-type(3) {
+        --angle: 45deg;
+        background: linear-gradient(var(--angle), #ffd70026, #b8860b2b);
+        border: 1px solid #ffd7004a;
+    }
+    .racers .racer:nth-of-type(1):hover {
+        border: 1px solid #ffffff7a;
+    }
+    .racers .racer:nth-of-type(2):hover {
+        border: 1px solid #0080007a;
+    }
+    .racers .racer:nth-of-type(3):hover {
+        border: 1px solid #ffd7007a;
+    }
+        */
+</style>
+
+
+<style>
+    .race-form form {
+        flex-direction: column;
+        gap: 40px;
+        width: 100%;
+    }
+    .race-form {
+        margin-top: 40px;
+        padding: 0;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .form-row { 
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+    .form-group {
+        width: 100%;
+        max-width: 800px;
+        margin-bottom: 40px;
+    }
+    .form__submit {
+        margin: 0;
+    }
+    .form__btn {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: transparent;
+        border: 1px solid #FFFFFF24;
+        width: 200px;
+        min-height: 42px;
+        cursor: pointer;
+        transition: all 0.025s ease-in;
+    }
+    .form__btn:hover {
+        border: 1px solid #FFFFFF79;
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+        text-decoration: line-through;
+    }
+    .intro-text-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<script>
+    const introHomescreen = document.querySelector('.intro-homescreen-wrapper')
+    const homescreenLeaderboard = document.querySelector('.homescreen-leaderboard')
+    const introHeader = document.querySelector('header')
+
+    window.addEventListener('load', event => {
+        authenticateUser()
+    })
+
+    async function authenticateUser(){
+        const authenticateUser = await fetch('/account/logged-in').then(resp => resp.json())
+        authenticateUser ? authenticatedUser() : unauthenticatedUser()
+    }
+
+    function authenticatedUser(){
+        introHomescreen.style.display = 'none'
+        homescreenLeaderboard.style.display = 'block'
+        introHeader.style.display = 'block'
+    }
+
+    function unauthenticatedUser(){
+        introHomescreen.style.display = 'flex'
+        homescreenLeaderboard.style.display = 'none'
+        introHeader.style.display = 'none'
+    }
+</script>

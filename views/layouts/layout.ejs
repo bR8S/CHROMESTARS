@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+= = = = = = = = = = = = = = = = = = = = = = = = = = 
+=  • ▌ ▄ ·.  ▄▄▄·▄▄▄▄▄ ▄▄▄· • ▌ ▄ ·.       .▄▄ ·  =
+=  ·██ ▐███▪▐█ ▀█•██  ▐█ ▀█ ·██ ▐███▪▪     ▐█ ▀.  =
+=  ▐█ ▌▐▌▐█·▄█▀▀█ ▐█.▪▄█▀▀█ ▐█ ▌▐▌▐█· ▄█▀▄ ▄▀▀▀█▄ =
+=  ██ ██▌▐█▌▐█ ▪▐▌▐█▌·▐█ ▪▐▌██ ██▌▐█▌▐█▌.▐▌▐█▄▪▐█ =
+=  ▀▀  █▪▀▀▀ ▀  ▀ ▀▀▀  ▀  ▀ ▀▀  █▪▀▀▀ ▀█▄▀▪ ▀▀▀▀  =                                 
+= = = = = =  matamos.co =|= @backmaskgg = = = = = =
+= = = = = = = = = = = = = = = = = = = = = = = = = = 
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHROMESTARS | Chase the Crown</title>
+    <script src="https://cdn.jsdelivr.net/npm/grained@0.0.2/grained.min.js"></script>
+</head>
+<body>
+    <%- include('../partials/header.ejs') %>
+    <%- include('../partials/search.ejs') %>
+    <%- include('../partials/overlay.ejs') %>
+    <%- include('../partials/grained.ejs') %>
+    <%- include('../partials/background.ejs') %>
+
+    <%- body %>
+</body>
+</html>
+
+<style>
+    body, html {
+        /*background-color: #101010;*/
+        background-image: radial-gradient(ellipse farthest-corner at -40% 45%, rgb(59 59 59 / 85%), rgb(6 6 6 / 94%), rgb(35 35 35 / 93%)), linear-gradient(97deg, rgb(64 73 193 / 90%) 0%, rgb(10 15 35 / 90%) 5%);
+        background-image: radial-gradient(ellipse farthest-corner at -40% 45%, rgb(59 59 59 / 85%), hsl(242deg 10.48% 30.78%), rgb(35 35 35 / 93%)), linear-gradient(97deg, rgb(64 73 193 / 90%) 0%, rgb(10 15 35 / 90%) 5%);
+        color: #FFFFFF;
+        font-family: monospace !important;
+        margin: 0;
+        min-height: 100vh;
+    }
+    h1, h2, h3, h4, h5 {
+        text-transform: uppercase;
+    }
+    h1, h2, h3, h4, h5, p, a, div, button, label, input {
+        color: #FFFFFF;
+        font-family: monospace !important;
+    }
+    h1, h2, h3, h4, h5, p, a, button, label, input {
+        position: relative;
+        z-index: 3;
+    }
+    a {
+        text-decoration: none;
+    }
+    input {
+        border: 1px solid #FFFFFF24;
+        background: transparent;
+        border-radius: 0;
+    }
+    .padding {
+        padding: 20px 32px;
+    }
+    .form input, .race-form input, .race-form select {
+        padding: 8px 12px;
+        background: transparent;
+        border: 1px solid #FFFFFF24;
+        color: #FFFFFF;
+    } 
+    input:focus, input:focus-visible, select:focus-visible {
+        border: 1px solid #FFFFFF79;
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+    }
+    nav {
+        display: flex;
+        justify-content: space-between;
+    }
+    nav svg {
+        fill: #FFFFFF;
+        height: 16px;
+        width: auto;
+    }
+    .logo {
+        font-size: 24px;
+    }
+    .form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding-top: 120px;
+    }
+    .form-row {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+    }
+    .form form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 700px;
+    }
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 32px;
+    }
+    .form-row .form-group {
+        width: 50%;
+    }
+    .form label, .race-form label {
+        margin-bottom: 8px;
+        font-size: 14px;
+    } 
+    .form-input span {
+        padding: 8px 16px;
+        border: 1px solid #FFFFFF24;
+        background: #FFFFFF24;
+    }
+    .form__btn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: transparent;
+        border: 1px solid #FFFFFF24;
+        width: 200px;
+        min-height: 42px;
+        cursor: pointer;
+        transition: all 0.025s ease-in;
+    }
+    .form__btn:hover {
+        border: 1px solid #FFFFFF79;
+        border-radius: 0;
+        outline: none;
+        background: #FFFFFF24;
+    }
+    .form__submit {
+        background: transparent;
+        cursor: pointer;
+        font-family: monospace;
+    }
+</style>

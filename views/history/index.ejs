@@ -1,0 +1,77 @@
+<div class="padding">
+    <div class="races-header">
+        <h1>HISTORY</h1>
+    </div>
+
+    <div class="races">
+    <% race.forEach(race => { %>
+        <div class="race">
+            <div class="race-top">
+                <div class="race-title"><%= race.name %> | <%= race.time %></div>
+            </div>
+            <div class="race-bottom">
+                <ol class="race-participants">
+                    <% race.participants.forEach(participant => { %>
+                        <% racers.forEach(racer => { %>
+                            <% if (String(racer._id) === String(participant)) { %>
+                                <li class="racer" data-id="<%= racer._id %>"><%= racer.username %></li>
+                            <% } %>
+                        <% }) %>
+                    <% }) %>
+                </ol>
+            </div>
+        </div>
+    <% }) %>
+    </div>
+</div>
+
+<style>
+    .races-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .races {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    .race {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 16px;
+        gap: 8px;
+        border: 1px solid #FFFFFF24;
+    }
+    .race-top, .race-bottom {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .race-delete {
+        fill:#FFF;
+        height: 16px;
+        border: 1px solid #FFFFFF24;
+        padding: 6px;
+        cursor: pointer;
+        position: absolute;
+        top: 16px;
+        right: 16px;
+    }
+    .race-delete:hover {
+        border: 1px solid #FFFFFF79;
+        background: #FFFFFF24;
+    }
+    .race-delete svg {
+        height: 100%;
+        width: 100%;
+    }
+    ol {
+        margin: 0;
+    }
+    li {
+        padding: 4px;
+    }
+</style>
