@@ -1,0 +1,36 @@
+<div class="small-device-modal">
+    <h2>&#x26A0; Screen Too Small &#x26A0;</h2>
+    <p>This app is best viewed on a larger screen. Please resize your window or use a desktop for the best user experience.</p>
+</div>
+
+<style>
+    .small-device-modal {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ffffff0d;
+        text-align: center;
+        border-radius: 4px;
+        border: 1px solid #ffffff27;
+        width: 70%;
+        max-width: 450px;
+        backdrop-filter: blur(4px);
+    }
+    .small-device-modal h2 {
+        margin: 0;
+    }
+    .small-device-modal p {
+        line-height: 1.5;
+    }
+    @media screen and (min-width: 1280px){
+        .small-device-modal {
+            display: none;
+        }
+    }
+</style>

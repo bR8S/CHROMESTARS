@@ -12,8 +12,13 @@ const raceSchema = new mongoose.Schema({
     track: {
 
     },
+    event: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+        ref: 'Event'
+    },
     participants: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: Array,
         required: true,
         ref: 'Racer'
     },

@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
     try {
         if(req.session.user){
             const id = req.session.user.id
-            const user = await User.findById({ _id: id })
+            const user = await User.findById(id)
 
             if(user.admin){
                 const tracks = await Track.find({})
@@ -29,7 +29,7 @@ router.get('/new', async (req, res) => {
     try {
         if(req.session.user){
             const id = req.session.user.id
-            const user = await User.findById({ _id: id })
+            const user = await User.findById(id)
     
             if(user.admin){
                 res.render('track/new', { track: new Track() })

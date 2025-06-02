@@ -44,13 +44,9 @@
         border-radius: 0;
         outline: none;
         background: #FFFFFF24;
-        text-decoration: line-through;
     }
     .form__register {
         padding: 12px;
-    }
-    .form__register:hover {
-        text-decoration: line-through;
     }
     .form__login {
         gap: 0 !important;
@@ -73,7 +69,6 @@
     let message = document.querySelector('.form__message')
 
     form.addEventListener('submit', async (event) => {
-        console.log('submit')
         event.preventDefault();
         
         const email = document.getElementById('email').value;
@@ -92,8 +87,6 @@
             });
 
             const resp = await response.json();
-
-            console.log(resp)
 
             message.textContent = resp.message
             message.style.color = response.ok ? 'white' : 'red'

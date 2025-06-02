@@ -6,9 +6,9 @@ const User = require('../models/user')
 // All Races Route
 router.get('/', async (req, res) => {
     try {
-        const race = await Race.find({})
+        const race = await Race.find({}).populate('event', 'name')
         const racers = await User.find({})
-        res.render('history/index', { race: race, racers: racers})
+        res.render('history/index', { race: race, racers: racers })
     } catch {
         res.redirect('/')
     }

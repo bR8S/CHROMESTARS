@@ -1,3 +1,5 @@
+<%- include('partials/audio.ejs') -%>
+
 <div class="intro-homescreen-wrapper">
     <div class="intro-homescreen">
         <div class="intro-homescreen-bg"></div>
@@ -7,7 +9,7 @@
         <img class="intro-little-star" src="chromestar.png">
     </div>
     <div class="intro-text-content" style="text-align: center;">
-        <img class="homescreen-logo" src="chromestars-stars-logo.png">
+        <img class="homescreen-logo" src="chromestars-triple-star.png">
         <p> CHROMESTARS™ invites you to the ultimate underground racing circuit—a multi-week battle of speed, skill, and strategy. 
             This isn’t just about being fast; it’s about proving you have what it takes to rise above the rest. 
             <br><br>
@@ -19,6 +21,7 @@
         </div>
     </div>
 </div>
+
 <div class="homescreen-leaderboard">
     <h1>LEADERBOARD</h1>
     <% const sortedRacers = racers.slice().sort((a, b) => b.elo - a.elo) %>
@@ -71,6 +74,10 @@
 </div>
 
 <style>
+    .audio {
+        position: relative;
+        top: 32px;
+    }
     html {
         position: relative;
     }
@@ -84,7 +91,7 @@
         left: 0;
         height: 100vh;
         width: 100%;
-        background-color:#141414;
+        /*background-color:#141414;*/
     }
     .intro-homescreen {
         position: absolute;
@@ -99,7 +106,8 @@
         padding: 20px 32px;
     }
     .homescreen-logo {
-        height: 125px;
+        height: 85px;
+        margin-bottom: 12px;
     }
     .intro-homescreen-bg {
         background: url('cinematic.gif');
@@ -262,34 +270,6 @@
         border: 1px solid #ffffff7a;
         background: #ffffff1f;
     }
-    /*
-    .racers .racer:nth-of-type(1) {
-        background: radial-gradient(circle, rgb(238 174 202 / 20%) 0%, rgb(148 187 233 / 20%) 100%);
-    }
-    .racers .racer:nth-of-type(2) {
-        border: 1px solid #0080004a;
-        --angle: 45deg;
-        background: linear-gradient(var(--angle), oklab(0.76 -0.06 0.03 / 0.2), oklab(0.59 -0.06 0.01 / 0.2), oklab(0.48 -0.06 0 / 0.2));
-    }
-    .racers .racer:nth-of-type(3) {
-        --angle: 45deg;
-        background: linear-gradient(var(--angle), #ffd70026, #b8860b2b);
-        border: 1px solid #ffd7004a;
-    }
-    .racers .racer:nth-of-type(1):hover {
-        border: 1px solid #ffffff7a;
-    }
-    .racers .racer:nth-of-type(2):hover {
-        border: 1px solid #0080007a;
-    }
-    .racers .racer:nth-of-type(3):hover {
-        border: 1px solid #ffd7007a;
-    }
-        */
-</style>
-
-
-<style>
     .race-form form {
         flex-direction: column;
         gap: 40px;
@@ -332,7 +312,6 @@
         border-radius: 0;
         outline: none;
         background: #FFFFFF24;
-        text-decoration: line-through;
     }
     .intro-text-content {
         position: absolute;

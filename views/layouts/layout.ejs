@@ -22,6 +22,7 @@
     <%- include('../partials/overlay.ejs') %>
     <%- include('../partials/grained.ejs') %>
     <%- include('../partials/background.ejs') %>
+    <%- include('../partials/noti.ejs') %>
 
     <%- body %>
 </body>
@@ -29,9 +30,7 @@
 
 <style>
     body, html {
-        /*background-color: #101010;*/
-        background-image: radial-gradient(ellipse farthest-corner at -40% 45%, rgb(59 59 59 / 85%), rgb(6 6 6 / 94%), rgb(35 35 35 / 93%)), linear-gradient(97deg, rgb(64 73 193 / 90%) 0%, rgb(10 15 35 / 90%) 5%);
-        background-image: radial-gradient(ellipse farthest-corner at -40% 45%, rgb(59 59 59 / 85%), hsl(242deg 10.48% 30.78%), rgb(35 35 35 / 93%)), linear-gradient(97deg, rgb(64 73 193 / 90%) 0%, rgb(10 15 35 / 90%) 5%);
+        background-image: radial-gradient(ellipse farthest-corner at -40% 45%, rgb(59 59 59 / 85%), hsl(242deg 10.48% 30.78%), rgb(35 35 35 / 93%)), linear-gradient(97deg, rgb(64 73 193 / 90%) 0%, rgb(10 15 35 / 90%) 5%), url(noise_lt.svg);
         color: #FFFFFF;
         font-family: monospace !important;
         margin: 0;
@@ -64,6 +63,7 @@
         background: transparent;
         border: 1px solid #FFFFFF24;
         color: #FFFFFF;
+        color-scheme: dark;
     } 
     input:focus, input:focus-visible, select:focus-visible {
         border: 1px solid #FFFFFF79;
@@ -89,7 +89,7 @@
         align-items: center;
         justify-content: center;
         gap: 20px;
-        padding-top: 120px;
+        padding-top: 180px;
     }
     .form-row {
         display: flex;
@@ -142,5 +142,13 @@
         background: transparent;
         cursor: pointer;
         font-family: monospace;
+    }
+    @media screen and (max-width: 1280px){
+        header, .search-wrapper, .search-wrapper-overlay, .intro-homescreen-wrapper, .padding, .form, .homescreen-leaderboard {
+            display: none !important;
+        }
+        .small-device-modal {
+            display: flex;
+        }
     }
 </style>

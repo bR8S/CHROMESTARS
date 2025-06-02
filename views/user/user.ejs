@@ -1,3 +1,5 @@
+<div class="padding">
+<h1>SETTINGS</h1>
 <div class="user-page">
     <div class="user-page__left">
         <p class="user-page__label">Profile Image:</p>
@@ -17,7 +19,7 @@
                 </div>
             </div>
         </form>
-        <!--<h1 class="user-page__username"><%= username %></h1>-->
+        <a class="form__btn" href="/racer/<%= username %>">VISIT PROFILE</a>
     </div>
     <div class="form">
         <form class="background-image-form" action="/upload" method="POST" enctype="multipart/form-data">
@@ -88,6 +90,7 @@
             </form>
         </div>
     </div>
+</div>
 </div>
 
 <script>
@@ -198,7 +201,7 @@
         display: flex;
         flex-direction: row;
         gap: 32px;
-        padding: 92px 32px;
+        margin-top: 40px;
     }
     .user-page__left {
         width: 25%;

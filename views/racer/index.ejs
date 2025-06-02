@@ -1,8 +1,9 @@
 <!-- CALCULATE W/L RATIO -->
-<% if (losses === 0) { %>
-    <% losses = 1 %>
+<% let tempLosses = losses %>
+<% if (tempLosses === 0) { %>
+    <% tempLosses = 1 %>
 <% } %>
-<% const ratio = wins / losses %>
+<% const ratio = wins / tempLosses %>
 
 <!-- CALCULATE AVG POS -->
 <% let placementSum = 0 %>

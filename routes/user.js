@@ -58,7 +58,7 @@ router.get('/admin-perms', async (req, res) => {
 
 router.post('/update-account', async (req, res) => { 
     const id = req.body.id
-    const user = await User.findById({ _id: id })
+    const user = await User.findById(id)
 
     if(user.username !== req.body.username){
         user.username = req.body.username
@@ -75,11 +75,9 @@ router.post('/update-account', async (req, res) => {
     if(user.bio !== req.body.bio){
         user.bio = req.body.bio
     }
-    console.log(user.background_image, req.body.background_image)
     if(user.background_image !== req.body.background_image && req.body.background_image){
         user.background_image = req.body.background_image
     }
-    console.log(user.profile_image, req.body.profile_image)
     if(user.profile_image !== req.body.profile_image && req.body.profile_image){
         user.profile_image = req.body.profile_image
     }
@@ -111,12 +109,20 @@ router.get('/:id', async (req, res) => {
 
 // Update Racer Score Given ID
 router.post('/update-score', async (req, res) => {
+    console.log('/update-score')
+
+    console.log('Racer' + req.body.id)
+    console.log('Points' + req.body.points)
+
     const id = req.body.id
     const points = req.body.points
     
     try {
         const racer = await User.findById({ _id: id })
+        console.log('Racer' + racer)
+        console.log('Points' + points)
         racer.score = racer.score + points
+        console.log(racer.score)
         await racer.save()
     } catch (e) {
         console.log(e)
@@ -267,56 +273,50 @@ router.post('/update-podium-count', async (req, res) => {
 //Update Racer Rivals 
 router.post('/update-rivals', async (req, res) => {
     const id = req.body.id
-    const standing = req.body.standing
-    const standings = req.body.standings
+    const standing = req.body.standing // Racer standing
+    const standings = req.body.standings // All other racer standings
 
     try{
         const racer = await User.findById({ _id: id })
-        console.log('RACER: ' + racer)
-        
         let placementSum = 0
 
+        // Calc racer overall avg placement
         racer.placements.forEach(placement => {
             placementSum += placement
         })
 
         const avgPlacement = (placementSum / racer.placements?.length).toFixed(2)
 
-        console.log(standing + " > " + avgPlacement)
-        
+        // If standing is greater that means racer placed outside of avg, ex racer was upset
         if(standing > avgPlacement){
-            // save every racer that outplaced the current racers
+            // Save every racer that outplaced the current racers
             const rivalsArr = standings.slice(0, standing - 1)
+            console.log('Rival ids: ' + rivalsArr)
             const rivals = await User.find({ '_id': { $in: rivalsArr } })
 
-            console.log('RIVALS: ' + rivals)
+            console.log('Rival objects: ' + rivalsArr)
 
             rivals.forEach(rival => {
                 racer.rivals.push(rival.username)
             })
 
-            const rivalCount = new Map()
+            let rivalCount = new Map()
 
             racer.rivals.forEach(rival => {
                 rivalCount.set(rival, (rivalCount.get(rival) || 0) + 1)
             })
 
             // Step 2: Sort by frequency in descending order
-            const sortedRivals = Array.from(rivalCount.entries()).sort((a, b) => b[1] - a[1]);
+            let sortedRivals = Array.from(rivalCount.entries()).sort((a, b) => b[1] - a[1]);
 
             // Step 3: Extract the top N words
             let topRivals
 
             if(sortedRivals.length >= 3){
-                console.log('in if')
                 topRivals = sortedRivals.slice(0, 3).map(([rival, count]) => ({ rival, count }))
-                console.log(topRivals)
                 racer.top_rivals = topRivals
-            }
-            else {
-                console.log('in else')
+            } else {
                 topRivals = sortedRivals.map(([rival, count]) => ({ rival, count }))
-                console.log(topRivals)
                 racer.top_rivals = topRivals
             }
         }
@@ -335,7 +335,6 @@ router.post('/update-tracks', async (req, res) => {
 
     try{
         if(standing <= 3) {
-            console.log('standing <= 3')
             const racer = await User.findById({ _id: id })
             racer.tracks.push(track)
 
@@ -383,6 +382,18 @@ router.post('/reset-racers', async (req, res) => {
         })
     } catch(e){
         console.log(e)
+    }
+})
+
+// Delete all racers 
+router.post('/delete-racers', async (req, res) => {
+    try{
+        console.log('we get here')
+        await User.deleteMany({})
+        res.send('All racers deleted successfully') // Send response after deletion
+    } catch (e) {
+        console.error(e);
+        res.status(500).send('Error deleting racers')
     }
 })
 

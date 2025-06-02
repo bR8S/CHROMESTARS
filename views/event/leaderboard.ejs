@@ -1,0 +1,103 @@
+<div class="padding event-leaderboard">
+    <h1>LEADERBOARD</h1>
+    <% const sortedRacers = event.participants.slice().sort((a, b) => b.stats.score - a.stats.score) %>
+    <div class="racers">
+        <div class="racers-header">
+            <div class="racers-header__standing"></div>
+            <h3 class="racers-header__alias">DRIVER</h3>
+            <h3 class="racers-header__score">SCORE</h3>
+            <h3 class="racers-header__wins">TOTAL WINS</h3>
+            <h3 class="racers-header__competitions">COMPETITIONS</h3>
+            <h3 class="racers-header__avg-pos">AVERAGE POSITION</h3>
+        </div>
+        <% sortedRacers.forEach((racer, index) => { %>
+            <a href="/racer/<%= racer.racer.username %>" class="racer" data-id="<%= racer.racer._id %>">
+                <div class="racers-row__standing"><%= index + 1 %>.</div>
+                <div class="racers-row__alias">
+                    <img class="racers-row__img" src="<%= racer.racer.profile_image %>">
+                    <%= racer.racer.username %>
+                    </div>
+                <div class="racers-row__score"><%= racer.stats.score %></div>
+                <div class="racers-row__wins"><%= racer.stats.wins %></div>
+                <div class="racers-row__competitions"><%= racer.stats.competitions %></div>
+                <div class="racers-row__avg-pos">
+                    <% let placements = 0 %>
+                    <% racer.stats.placements.forEach(placement => { %>
+                        <% placements = placements + placement %>
+                    <% }) %>
+                    <% const avgPos = placements / racer.stats.placements.length %>
+                    <div class="racers-row__avg-pos-text"><%= avgPos.toFixed(1) %></div>
+                </div>
+            </a>
+        <% }) %>
+    </div>
+</div>
+
+<style>
+    .racers-header {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        padding: 0 16px;
+    }
+    .racers-header__standing, .racers-row__standing {
+        width: 2%;
+    }
+    .racers-row__img {
+        width: 36px;
+        height: 36px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    .racer:hover .racers-row__img {
+        outline: 1px solid #fff;
+    }
+    .racers-header__alias, .racers-row__alias {
+        width: 38%;
+        font-size: 14px;
+    }
+    .racers-row__alias {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .racers-row__alias:hover {
+        font-weight: bold;
+    }
+    .racers-header__score, .racers-header__wins, .racers-header__competitions, .racers-header__avg-pos, .racers-row__score, .racers-row__wins, .racers-row__competitions, .racers-row__avg-pos {
+        width: 17%;
+        text-align: center;
+    }
+    .racers-row__avg-pos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .racers-row__avg-pos-text {
+        padding: 8px 12px;
+        background-color: #ffffff24;
+        border: 1px solid rgba(255, 255, 255, 0.79);
+        border-radius: 25px;
+        width: 40px;
+    }
+    .racers {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    .racer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        gap: 16px;
+        border: 1px solid #FFFFFF24;
+        background: #ffffff0d;
+        transition: all 0.15s ease-in-out;
+    }
+    .racer:hover {
+        border: 1px solid #ffffff7a;
+        background: #ffffff1f;
+    }
+</style>

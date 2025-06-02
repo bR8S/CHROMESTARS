@@ -1,0 +1,16 @@
+<div class="padding">
+    <h1>EVENT</h1>
+
+    <% races.forEach(race => { %>
+        <div class="race">
+            <div class="race-top">
+                <div class="race-title"><%= race.name %></div>
+            </div>
+        </div>
+        <ol>
+            <% race.participants.forEach(participant => { %>
+                <li><%= participant.username %></li>
+            <% }) %>
+        </ol>
+    <% }) %>
+</div>

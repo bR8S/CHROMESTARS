@@ -1,5 +1,6 @@
 <div class="form">
     <h1>Register</h1>
+    <p><span>Note:</span> Please make sure to use your character's info to complete the Phone Number, Alias, First Name, and Last Name form fields.</p>
     <form action="/register" method="POST">
         <div class="form-row">
             <div class="form-group"> 
@@ -60,12 +61,19 @@
         border-radius: 0;
         outline: none;
         background: #FFFFFF24;
-        text-decoration: line-through;
     }
     .form__login {
         padding: 12px;
     }
-    .form__login:hover {
-        text-decoration: line-through;
+    .form h1 {
+        margin-bottom: 0px;
+    }
+    .form p {
+        max-width: 600px;
+        text-align: center;
+        margin-top: 0;
+    }
+    .form p span {
+        text-decoration: underline;
     }
 </style>

@@ -14,6 +14,7 @@ const racerRouter = require('./routes/racer')
 const trackRouter = require('./routes/track')
 const historyRouter = require('./routes/history')
 const passwordRouter = require('./routes/password')
+const eventRouter = require('./routes/event')
 
 const User = require('./models/user')
 
@@ -32,6 +33,7 @@ app.use(expressLayouts)
 app.use(express.static('public'))
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
 
 const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
@@ -83,6 +85,13 @@ app.use(session({
   cookie: { secure: false }
 }))
 
+// Initialize req.session.user
+app.use((req, res, next) => {
+    // Set res.locals.user to the current session user (or null if not logged in)
+    res.locals.user = req.session.user || null;
+    next(); // Pass to the next middleware or route handler
+  });
+
 app.use(methodOverride('_method'))
 
 app.use('/', indexRouter)
@@ -92,6 +101,7 @@ app.use('/racer', racerRouter)
 app.use('/track', trackRouter)
 app.use('/history', historyRouter)
 app.use('/password', passwordRouter)
+app.use('/event', eventRouter)
 
 app.use(favicon('public/chromestars-star.png'));
 
@@ -101,7 +111,7 @@ app.post('/upload', upload.single('image'), (req, res) => {
         res.send(JSON.stringify(req.file.filename))
     }
 });
-  
+
 // Retrieve image by filename
 app.get('/file/:filename', async (req, res) => {
     const paramFilename = req.params.filename
@@ -126,7 +136,7 @@ app.post('/login', async (req, res) => {
         const userMatch = await bcrypt.compare(password, user.password)
         
         if(userMatch){
-            req.session.user = { id: user._id, username: user.username }
+            req.session.user = { id: user._id, username: user.username, isAdmin: user.admin }
             //res.redirect('/')
             res.status(200).json({ message: 'User login successful.' })
         } else {
@@ -144,6 +154,7 @@ app.get('/register', (req, res) => {
 
 app.post('/register', async (req, res) => {
     try {
+        const origin = req.headers.origin
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
         const user = new User({
@@ -154,8 +165,8 @@ app.post('/register', async (req, res) => {
             phone_number: req.body.phone,
             email: req.body.email,
             password: hashedPassword,
-            profile_image: 'http://localhost:3000/file/7cde0af6af0f18c6a1545c6d0168a1e4.jpg',
-            background_image: 'http://localhost:3000/file/6a886bc8e5def087acbf93b6516eb5a2.png',
+            profile_image: `${origin}/file/6739650e9a47316847ce1133bd4bb6ea.png`,
+            background_image: `${origin}/file/6a886bc8e5def087acbf93b6516eb5a2.png`,
             username: req.body.username, 
             bio: 'placeholder bio',
             wins: 0,
@@ -171,11 +182,11 @@ app.post('/register', async (req, res) => {
             resetPasswordToken: undefined, 
             resetPasswordExpires: undefined
         })
-
         await user.save()
 
         res.redirect('/login')
-    } catch {
+    } catch (error) {
+        console.log(error)
         res.redirect('/register')
     }
 })

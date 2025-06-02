@@ -17,24 +17,58 @@
                         <option value="<%= track.name %>"><%= track.name %></option>
                     <% }) %>
                 </select>
+            </div>
+            <div class="event-options form-group">
+                <label for="event-options">Event</label>
+                <select id="event-options">
+                    <option value="">N/A</option>
+                    <% events.forEach(event => { %>
+                        <option value="<%= event.id %>"><%= event.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="racer-options">Standings (only include racers that did not DNF)</label>
+                <input type="text" placeholder="Search" id="racer-search-filter">
+
+                <div class="racer-options" id="racer-options">
+                    <% const sortedRacers = racers.slice().sort((a, b) => a.username.localeCompare(b.username)) %>
+                    <% sortedRacers.forEach(racer => { %>
+                        <div class="racer" data-alias="<%= racer.username %>">
+                            <input type="checkbox" class="racer-checkbox" id="<%= racer.username %>" name="<%= racer.username %>" value="<%= racer._id %>">
+                            <div class="racer-select"></div>
+                            <span></span>
+                            <label for="<%= racer.username %>">
+                                <%= racer.username %>
+                            </label>
+                        </div>
+                    <% }) %>
                 </div>
-            <div class="racer-options" id="racer-options">
-            <% const sortedRacers = racers.slice().sort((a, b) => a.username.localeCompare(b.username)) %>
-            <% sortedRacers.forEach(racer => { %>
-                <div class="racer">
-                    <input type="checkbox" class="racer-checkbox" id="<%= racer.username %>" name="<%= racer.username %>" value="<%= racer._id %>">
-                    <div class="racer-select"></div>
-                    <span></span>
-                    <label for="<%= racer.username %>">
-                        <%= racer.username %>
-                    </label>
-                </div>
-            <% }) %>
             </div>
             <ol class="racer-standings"></ol>
-            <div class="form-row">
-                <button class="form__btn form__submit">Submit Race</button>
+
+            <div class="form-group">
+                <label for="dnf-options">DNF</label>
+                <input type="text" placeholder="Search" id="dnf-search-filter">
+
+                <div class="dnf-options" id="dnf-options">
+                    <% sortedRacers.forEach(racer => { %>
+                        <div class="dnf" data-alias="<%= racer.username %>">
+                            <input type="checkbox" class="dnf-checkbox" id="<%= racer.username %>" name="<%= racer.username %>" value="<%= racer._id %>">
+                            <div class="dnf-select"></div>
+                            <span></span>
+                            <label for="<%= racer.username %>">
+                                <%= racer.username %>
+                            </label>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+            <ol class="dnf-standings"></ol>
+
+            <div class="form-row form-submit-cancel">
                 <a class="form__btn" href="/">Cancel</a>
+                <button class="form__btn form__submit">Submit Race</button>
             </div>
         </div>
     </div>
@@ -42,8 +76,13 @@
 
 <script>
     const raceCheckboxes = Array.from(document.querySelectorAll('.race-form-new .racer-checkbox'))
+    const dnfCheckboxes = Array.from(document.querySelectorAll('.race-form-new .dnf-checkbox'))
+
     let standingsArr = []
     let standingsIdArr = []
+
+    let dnfArr = []
+    let dnfIdArr = []
 
     raceCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('click', async event => {
@@ -64,11 +103,31 @@
         })
     })
 
+    dnfCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('click', async event => {
+            if(!checkbox.checked){
+                // standing for current index should be removed, all elements should be moved over
+                const index = dnfArr.indexOf(event.target.name)
+                if (index > -1) { // only splice array when item is found
+                    dnfArr.splice(index, 1) // 2nd parameter means remove one item only
+                    dnfIdArr.splice(index, 1)
+                }
+            }
+            else {
+                // standing for current index should be added
+                dnfArr.push(event.target.name)
+                dnfIdArr.push(event.target.value)
+            }
+            updateDnf(dnfArr)
+        })
+    })
+
     const raceSubmit = document.querySelector('.race-form-new .form__submit')
     submitRaceForm()
     
     function updateStandings(standingsArr){
         const racerStandings = document.querySelector('.racer-standings')
+        standingsArr.length > 0 ? racerStandings.classList.add('show') : racerStandings.classList.remove('show')
         racerStandings.innerHTML = ''
         
         standingsArr.forEach(standing => {
@@ -78,14 +137,29 @@
         })
     }
 
+    function updateDnf(dnfArr){
+        const dnfStandings = document.querySelector('.dnf-standings')
+        dnfArr.length > 0 ? dnfStandings.classList.add('show') : dnfStandings.classList.remove('show')
+        dnfStandings.innerHTML = ''
+        
+        dnfArr.forEach(standing => {
+            let li = document.createElement('li')
+            li.innerText = standing
+            dnfStandings.append(li)
+        })
+    }
+
     async function submitRaceForm(){
         raceSubmit.addEventListener('click', async event => {
             const raceName = document.querySelector('.race-form-new #name').value
             const raceTime = document.querySelector('.race-form-new #time').value
-            const trackName = document.querySelector('#track-options').value
+            const raceEvent = document.querySelector('.race-form-new #event-options').value
+            const raceTrack = document.querySelector('#track-options').value
 
             const idString = standingsIdArr.join(',')
+            const dnfIdString = dnfIdArr.join(',')
             const allRacers = await getAllRacers(idString)
+            const allDnfs = await getAllRacers(dnfIdString)
             const numOfRacers = standingsIdArr.length
 
             standingsIdArr.forEach((id, index) => {
@@ -97,13 +171,24 @@
                 updateRacerStreak(id)
                 updateRacerPodiumCount(id)
                 updateRacerRivals(id, index + 1, standingsIdArr)
-                updateRacerTracks(id, trackName, index)
+                updateRacerTracks(id, raceTrack, index)
+            })
+
+            dnfIdArr.forEach((id, index) => {
+                const dnfPlacement = standingsArr.length
+                updateRacerLoss(id)
+                updateRacerCompetitions(id)
+                updateRacerAvgPos(id, dnfPlacement)
+                updateRacerDnfElo(id, allDnfs)
+                updateRacerStreak(id)
             })
 
             const data = JSON.stringify({
                 title: raceName,
                 time: raceTime,
-                participants: standingsIdArr
+                track: raceTrack,
+                participants: standingsIdArr,
+                event: raceEvent
             })
 
             const newRace = await fetch('/race', {
@@ -183,6 +268,28 @@
         })
         const updateRacer = await fetch('/account/update-score', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+    }
+
+    async function updateRacerDnfElo(id, allDnfs){
+        let currRacer = allDnfs.filter(racer => racer._id === id)
+        let currElo = currRacer[0].elo 
+        let newElo = currElo - 10
+
+        const data = JSON.stringify({
+            id: id,
+            elo: newElo
+        })
+
+        const updateRacer = await fetch('/account/update-elo', {
+            method: 'POST',      
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: data
         })
     }
@@ -293,6 +400,31 @@
         })
     }
 
+    const racerSearchFilter = document.querySelector('#racer-search-filter')
+
+    let racerInputs = document.querySelectorAll('.racer')
+    
+    racerSearchFilter.addEventListener("input", event => {
+        // Do something when Enter is pressed
+        const value = event.target.value
+        racerInputs.forEach(racer => {
+            const isVisible = racer.dataset.alias.toLowerCase().includes(value)
+            racer.classList.toggle("hide-result", !isVisible)
+        })
+    }) 
+
+    const dnfSearchFilter = document.querySelector('#dnf-search-filter')
+
+    let dnfInputs = document.querySelectorAll('.dnf')
+    
+    dnfSearchFilter.addEventListener("input", event => {
+        // Do something when Enter is pressed
+        const value = event.target.value
+        dnfInputs.forEach(racer => {
+            const isVisible = racer.dataset.alias.toLowerCase().includes(value)
+            racer.classList.toggle("hide-result", !isVisible)
+        })
+    }) 
 </script>
 
 
@@ -312,10 +444,10 @@
         display: flex;
         flex-direction: column;
         gap: 40px;
+        margin-top: 48px;
     }
     .form-group {
         width: 100%;
-        max-width: 800px;
         margin-bottom: 40px;
     }
     .form__submit {
@@ -340,23 +472,22 @@
         outline: none;
         background: #FFFFFF24;
     }
-    .racer-options {
+    .racer-options, .dnf-options {
         display: flex;
         flex-wrap: wrap;
         gap: 24px;
-        margin-top: 24px;
-        margin-bottom: 24px;
+        margin-top: 32px;
     }
-    .racer {
+    .racer, .dnf {
+        display: flex;
         height: 40px;
         width: 120px;
         padding: 0 12px;
         position: relative;
-        display: flex;
         align-items: center;
         justify-content: center;
     }
-    .racer-select {
+    .racer-select, .dnf-select {
         position: absolute;
         top: 0;
         left: 0;
@@ -365,33 +496,56 @@
         border: 1px solid #FFFFFF24;
         pointer-events: none;
     }
-    .racer input {
+    .racer input, .dnf input {
         width: 100%;
         height: 100%;
         position: absolute;
         opacity: 0;
     }
-    .racer input:checked + .racer-select {
+    .racer input:checked + .racer-select, .dnf input:checked + .dnf-select {
         border: 1px solid #FFFFFF79;
         border-radius: 0;
         outline: none;
         background: #FFFFFF24;
     }
-    .racer input:hover {
+    .racer input:hover, .dnf input:hover {
         cursor: pointer;
     }
-    .racer input:hover + .racer-select {
+    .racer input:hover + .racer-select, .dnf input:hover + .dnf-select {
         border-radius: 0;
         outline: none;
         background: #FFFFFF24;
     }
-    .racer label {
+    .racer label, .dnf label {
         margin: 0 !important;
-    }
-    .form input, .race-form input, .race-form select {
-        padding-right: 32px !important;
+        pointer-events: none;
     }
     .race-form select option {
         color: black;
     }
+    .racer.hide-result, .dnf.hide-result {
+        display: none;
+    }
+    #racer-search-filter::placeholder, #dnf-search-filter::placeholder {
+        color: #fff;
+    }
+    .form-submit-cancel {
+        justify-content: center;
+        margin-top: 120px;
+    }
+    .racer-standings, .dnf-standings {
+        margin-bottom: 32px;
+        display: none;
+        flex-direction: column;
+        padding: 16px;
+        padding-left: 40px;
+        background-color: #ffffff0d;
+        border-radius: 4px;
+        border: 1px solid #ffffff27;
+        backdrop-filter: blur(4px);
+        gap: 4px;
+    }
+    .racer-standings.show, .dnf-standings.show {
+        display: flex;
+    }   
 </style>

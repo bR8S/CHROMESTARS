@@ -4,14 +4,20 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: 300px;
-        height: 150px;
-        background: radial-gradient(ellipse, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 60%);
+        width: 30vw;
+        height: 30vh;
+        background: radial-gradient(rgba(173, 173, 173, 1), transparent);
         transition: scale 0.5s ease-in, opacity 0.25s ease-in;
         opacity: 0;
         pointer-events: none;
         z-index: 1000;
         overflow: hidden;
+        filter: blur(60px);
+        transform: translate(-50%, -50%);
+        z-index: 0;
+        border-radius: 50%;
+        mix-blend-mode: hard-light;
+        pointer-events: none;
     }
     .cursor-move-bg.move {
         opacity: 1;
@@ -51,8 +57,8 @@
 
         cursorBg.style.top = `${e.pageY}px`
         cursorBg.style.left = `${e.pageX}px`
-        cursorBg.style.transform = `translate(-50%, -50%) scaleX(${scaleX}) scaleY(${scaleY})`
-        cursorBg.style.opacity = opacity
+        /*cursorBg.style.transform = `translate(-50%, -50%) scaleX(${scaleX}) scaleY(${scaleY})`*/
+        cursorBg.style.opacity = 1
 
         prevX = e.pageX
         prevY = e.pageY
@@ -62,9 +68,11 @@
         cursorMoveTimeout = setTimeout(cursorMoveFalse, 100) // we can't tell when mousemove stops, so timeout will reset value for us, if mouse continues moving will apply styles again
     })
 
+    /*
     document.addEventListener("mouseout", () => {
         cursorBg.style.transform = "none"
     })
+    */
 
     function cursorMoveFalse() {
         cursorBg.style.opacity = 0

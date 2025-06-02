@@ -27,10 +27,7 @@ router.post('/forgot-password', async (req, res) => {
         const users = await User.find({})
         const user = users.find( user => user.email.toString() === email.toString())
 
-        console.log(user)
-
         if (!user) {
-            console.log('in if')
             return res.status(404).json({ message: 'User not found' });
         }
 

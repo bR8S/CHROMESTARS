@@ -1,0 +1,79 @@
+<audio loop class="intro-homescreen-audio">
+    <source src="negative-culture.mp3" type="audio/mpeg">
+</audio>
+<div class="intro-homescreen__play-pause">
+    <svg class="intro-homescreen__play" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M23 12l-22 12v-24l22 12zm-21 10.315l18.912-10.315-18.912-10.315v20.63z"/></svg>
+    <svg class="intro-homescreen__pause" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M10 24h-6v-24h6v24zm10 0h-6v-24h6v24zm-11-23h-4v22h4v-22zm10 0h-4v22h4v-22z"/></svg>
+</div>
+
+<style>
+   .intro-homescreen__play-pause svg {
+        fill: #ffffff76;
+    }
+    .intro-homescreen__play-pause:hover svg {
+        fill: #ffffff;
+    }
+    .intro-homescreen__play-pause {
+        height: fit-content;
+        cursor: pointer;
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        border-radius: 50%;
+        border: 1px solid #FFFFFF44;
+        outline: none;
+        background: transparent;
+        height: 50px;
+        width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.025s ease-in;
+        z-index: 100000000;
+    }
+    .intro-homescreen__play-pause:hover {
+        border: 1px solid #FFFFFF79;
+        outline: none;
+        background: #FFFFFF24;
+    }
+    .intro-homescreen__play {
+        display: block;
+    }
+    svg.intro-homescreen__play {
+        position: relative;
+        left: 3px;
+        pointer-events: none;
+    }
+    .intro-homescreen__pause {
+        display: none;
+        pointer-events: none;
+    }
+    .intro-homescreen__play.hide {
+        display: none;
+    }
+    .intro-homescreen__pause.show {
+        display: block;
+    }
+</style>
+
+<script>
+    const introHomescreenAudio = document.querySelector('.intro-homescreen-audio')
+    const introHomescreenPlayBtn = document.querySelector('.intro-homescreen__play-pause')
+    const introHomescreenPlaySVG = document.querySelector('.intro-homescreen__play')
+    const introHomescreenPauseSVG = document.querySelector('.intro-homescreen__pause')
+
+    introHomescreenAudio.volume = 0.03;
+
+    window.addEventListener('load', event => {
+        introHomescreenAudio.volume = 0.03;
+        introHomescreenPlaySVG.classList.remove('hide')
+        introHomescreenPauseSVG.classList.remove('show')
+        if(!introHomescreenAudio.paused) introHomescreenAudio.pause()
+
+        introHomescreenPlayBtn.addEventListener('click', event => {
+            introHomescreenAudio.paused ? introHomescreenAudio.play() : introHomescreenAudio.pause()
+            introHomescreenPlaySVG.classList.toggle('hide')
+            introHomescreenPauseSVG.classList.toggle('show')
+        })
+    })
+</script>
