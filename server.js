@@ -89,7 +89,7 @@ app.use(session({
 app.use((req, res, next) => {
     // Set res.locals.user to the current session user (or null if not logged in)
     res.locals.user = req.session.user || null;
-    next(); // Pass to the next middleware or route handler
+    next(); 
   });
 
 app.use(methodOverride('_method'))
@@ -137,7 +137,6 @@ app.post('/login', async (req, res) => {
         
         if(userMatch){
             req.session.user = { id: user._id, username: user.username, isAdmin: user.admin }
-            //res.redirect('/')
             res.status(200).json({ message: 'User login successful.' })
         } else {
             res.status(400).json({ message: 'User password was incorrect.' })
@@ -158,7 +157,6 @@ app.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
         const user = new User({
-            /*id: Date.now().toString(),*/
             username: req.body.username,
             first_name: req.body.first_name,
             last_name: req.body.last_name,
