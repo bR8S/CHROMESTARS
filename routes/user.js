@@ -390,7 +390,7 @@ router.post('/delete-racers', async (req, res) => {
     try{
         console.log('we get here')
         await User.deleteMany({})
-        res.send('All racers deleted successfully') // Send response after deletion
+        res.send('All racers deleted successfully')
     } catch (e) {
         console.error(e);
         res.status(500).send('Error deleting racers')

@@ -12,8 +12,6 @@ router.get('/', async (req, res) => {
             const id = req.session.user.id
             const user = await User.findById(id)
 
-            console.log(user)
-
             if(user.admin){
                 const race = await Race.find({}).populate('event', 'name')
                 const racers = await User.find({})
@@ -35,8 +33,6 @@ router.get('/new', async (req, res) => {
         if(req.session.user){
             const id = req.session.user.id
             const user = await User.findById(id)
-
-            console.log(user)
 
             if(user.admin){
                 const racers = await User.find({})
@@ -67,8 +63,6 @@ router.post('/', async (req, res) => {
     const sortedRacers = participants.map(id => 
         racers.find(racer => racer._id.toString() === id.toString())
     ).filter(Boolean) // Remove undefined values
-
-    console.log('Sorted racers: ' + sortedRacers)
 
     if (req.body.event === ''){
         req.body.event = null
