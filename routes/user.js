@@ -267,7 +267,7 @@ router.post('/update-podium-count', async (req, res) => {
 router.post('/update-rivals', async (req, res) => {
     const id = req.body.id
     const standing = req.body.standing // Racer standing
-    const standings = req.body.standings // All other racer standings
+    const standings = req.body.standings
 
     try{
         const racer = await User.findById({ _id: id })
