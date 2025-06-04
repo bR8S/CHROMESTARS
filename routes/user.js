@@ -151,7 +151,6 @@ router.post('/update-win', async (req, res) => {
     } catch (e) {
         console.log(e)
     }
-
     res.send('')
 })
 
@@ -166,7 +165,6 @@ router.post('/update-loss', async (req, res) => {
     } catch (e) {
         console.log(e)
     }
-
     res.send('')
 })
 
@@ -181,11 +179,10 @@ router.post('/update-competitions', async (req, res) => {
     } catch (e) {
         console.log(e)
     }
-
     res.send('')
 })
 
-// Update Racer Avg Pos Given ID
+// Update Racers Avg Pos Given ID 
 router.post('/update-avg-pos', async (req, res) => {
     const id = req.body.id
     const placement = req.body.placement + 1
@@ -201,7 +198,7 @@ router.post('/update-avg-pos', async (req, res) => {
     res.send('')
 })
 
-// Update Racer Best Streak Given ID
+// Update Racers Best Streak Given ID
 router.post('/update-streak', async (req, res) => {
     const id = req.body.id
     
@@ -233,7 +230,6 @@ router.post('/update-streak', async (req, res) => {
     } catch (e) {
         console.log(e)
     }
-
     res.send('')
 })
 
