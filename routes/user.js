@@ -284,10 +284,7 @@ router.post('/update-rivals', async (req, res) => {
         if(standing > avgPlacement){
             // Save every racer that outplaced the current racers
             const rivalsArr = standings.slice(0, standing - 1)
-            console.log('Rival ids: ' + rivalsArr)
             const rivals = await User.find({ '_id': { $in: rivalsArr } })
-
-            console.log('Rival objects: ' + rivalsArr)
 
             rivals.forEach(rival => {
                 racer.rivals.push(rival.username)
