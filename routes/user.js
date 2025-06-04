@@ -109,20 +109,13 @@ router.get('/:id', async (req, res) => {
 
 // Update Racer Score Given ID
 router.post('/update-score', async (req, res) => {
-    console.log('/update-score')
-
-    console.log('Racer' + req.body.id)
-    console.log('Points' + req.body.points)
 
     const id = req.body.id
     const points = req.body.points
     
     try {
         const racer = await User.findById({ _id: id })
-        console.log('Racer' + racer)
-        console.log('Points' + points)
         racer.score = racer.score + points
-        console.log(racer.score)
         await racer.save()
     } catch (e) {
         console.log(e)
@@ -388,9 +381,8 @@ router.post('/reset-racers', async (req, res) => {
 // Delete all racers 
 router.post('/delete-racers', async (req, res) => {
     try{
-        console.log('we get here')
         await User.deleteMany({})
-        res.send('All racers deleted successfully')
+        res.send('All racers deleted successfully') // Send response after deletion
     } catch (e) {
         console.error(e);
         res.status(500).send('Error deleting racers')
